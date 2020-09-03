@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,11 +17,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
-        TextView tv = findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        GLSurfaceView glSurfaceView = new GLSurfaceView(this);
+        // pick an OpenGL ES 2.0 context
+        glSurfaceView.setEGLContextClientVersion(2);
+        glSurfaceView.setRenderer(new OpenGLRender());
+        setContentView(glSurfaceView);
     }
 
     /**
