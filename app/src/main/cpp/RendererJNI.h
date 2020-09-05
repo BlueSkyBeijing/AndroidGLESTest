@@ -14,7 +14,7 @@ extern "C" {
  * Method:    glesInit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesInit
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_glesInit
 (JNIEnv *, jobject);
 
 /*
@@ -22,7 +22,7 @@ JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesInit
  * Method:    glesRender
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesRender
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_glesRender
 (JNIEnv *, jobject);
 
 /*
@@ -30,11 +30,11 @@ JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesRender
  * Method:    glesResize
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesResize
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_glesResize
 (JNIEnv *, jobject, jint, jint);
 
 
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_readShaderFile
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_readShaderFile
 (JNIEnv *env, jobject self, jobject assetManager);
 
 #ifdef __cplusplus

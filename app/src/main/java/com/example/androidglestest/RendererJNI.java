@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class RendererJNI implements GLSurfaceView.Renderer {
 static {
-        System.loadLibrary("gltest-lib");
+        System.loadLibrary("native-lib");
         }
 private AssetManager mAssetMgr = null;
 private final String mLogTag = "ndk-build";

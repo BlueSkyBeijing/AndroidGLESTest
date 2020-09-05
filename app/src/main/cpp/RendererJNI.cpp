@@ -93,143 +93,131 @@ GLuint LoadShader ( GLenum type, const char *shaderSrc )
 
 }
 
-//*********************************************************************************
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesInit
-(JNIEnv *pEnv, jobject obj){
-char vShaderStr[] =
-        "#version 300 es                          \n"
-        "layout(location = 0) in vec4 vPosition;  \n"
-        "void main()                              \n"
-        "{                                        \n"
-        "   gl_Position = vPosition;              \n"
-        "}                                        \n";
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_glesInit
+        (JNIEnv *pEnv, jobject obj){
+    char vShaderStr[] =
+            "#version 300 es                          \n"
+            "layout(location = 0) in vec4 vPosition;  \n"
+            "void main()                              \n"
+            "{                                        \n"
+            "   gl_Position = vPosition;              \n"
+            "}                                        \n";
 
-char fShaderStr[] =
-        "#version 300 es                              \n"
-        "precision mediump float;                     \n"
-        "out vec4 fragColor;                          \n"
-        "void main()                                  \n"
-        "{                                            \n"
-        "   fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );  \n"
-        "}                                            \n";
+    char fShaderStr[] =
+            "#version 300 es                              \n"
+            "precision mediump float;                     \n"
+            "out vec4 fragColor;                          \n"
+            "void main()                                  \n"
+            "{                                            \n"
+            "   fragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );  \n"
+            "}                                            \n";
 
 
-char vshader[] = "shader/vs.glsl";
-char pshader[] = "shader/fs.glsl";
-char *pVertexShader = readShaderSrcFile(vshader, g_pAssetManager);
-char *pFragmentShader = readShaderSrcFile(pshader, g_pAssetManager);
+    char vshader[] = "shader/vs.glsl";
+    char pshader[] = "shader/fs.glsl";
+    char *pVertexShader = readShaderSrcFile(vshader, g_pAssetManager);
+    char *pFragmentShader = readShaderSrcFile(pshader, g_pAssetManager);
 
-GLuint vertexShader;
-GLuint fragmentShader;
-GLuint programObject;
-GLint linked;
+    GLuint vertexShader;
+    GLuint fragmentShader;
+    GLuint programObject;
+    GLint linked;
 
-// Load the vertex/fragment shaders
-//vertexShader = LoadShader ( GL_VERTEX_SHADER, vShaderStr );
-//fragmentShader = LoadShader ( GL_FRAGMENT_SHADER, fShaderStr );
-vertexShader = LoadShader ( GL_VERTEX_SHADER, pVertexShader );
-fragmentShader = LoadShader ( GL_FRAGMENT_SHADER, pFragmentShader );
+    // Load the vertex/fragment shaders
+    //vertexShader = LoadShader ( GL_VERTEX_SHADER, vShaderStr );
+    //fragmentShader = LoadShader ( GL_FRAGMENT_SHADER, fShaderStr );
+    vertexShader = LoadShader ( GL_VERTEX_SHADER, pVertexShader );
+    fragmentShader = LoadShader ( GL_FRAGMENT_SHADER, pFragmentShader );
 
-// Create the program object
-programObject = glCreateProgram ( );
+    // Create the program object
+    programObject = glCreateProgram ( );
 
-if ( programObject == 0 )
-{
-return;
+    if ( programObject == 0 )
+    {
+        return;
+    }
+
+    glAttachShader ( programObject, vertexShader );
+    glAttachShader ( programObject, fragmentShader );
+
+    // Link the program
+    glLinkProgram ( programObject );
+
+    // Check the link status
+    glGetProgramiv ( programObject, GL_LINK_STATUS, &linked );
+
+    if ( !linked )
+    {
+        GLint infoLen = 0;
+
+        glGetProgramiv ( programObject, GL_INFO_LOG_LENGTH, &infoLen );
+
+        if ( infoLen > 1 )
+        {
+            char *infoLog = (char *)malloc ( sizeof ( char ) * infoLen );
+
+            glGetProgramInfoLog ( programObject, infoLen, NULL, infoLog );
+            LOGE("Error linking program:[%s]", infoLog );
+
+            free ( infoLog );
+        }
+
+        glDeleteProgram ( programObject );
+        return;
+    }
+
+    // Store the program object
+    g_programObject = programObject;
+
+    glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
 }
 
-glAttachShader ( programObject, vertexShader );
-glAttachShader ( programObject, fragmentShader );
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_glesRender
+        (JNIEnv *pEnv, jobject obj){
+    GLfloat vVertices[] = {  0.0f,  0.5f, 0.0f,
+                             -0.5f, -0.5f, 0.0f,
+                             0.5f, -0.5f, 0.0f
+    };
 
-// Link the program
-glLinkProgram ( programObject );
+    // Set the viewport
+    glViewport ( 0, 0, g_width, g_height );
 
-// Check the link status
-glGetProgramiv ( programObject, GL_LINK_STATUS, &linked );
+    // Clear the color buffer
+    glClear ( GL_COLOR_BUFFER_BIT );
 
-if ( !linked )
-{
-GLint infoLen = 0;
+    // Use the program object
+    glUseProgram ( g_programObject );
 
-glGetProgramiv ( programObject, GL_INFO_LOG_LENGTH, &infoLen );
+    // Load the vertex data
+    glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, 0, vVertices );
+    glEnableVertexAttribArray ( 0 );
 
-if ( infoLen > 1 )
-{
-char *infoLog = (char *)malloc ( sizeof ( char ) * infoLen );
-
-glGetProgramInfoLog ( programObject, infoLen, NULL, infoLog );
-LOGE("Error linking program:[%s]", infoLog );
-
-free ( infoLog );
-}
-
-glDeleteProgram ( programObject );
-return;
-}
-
-// Store the program object
-g_programObject = programObject;
-
-glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
-}
-
-/*
- * Class:     android_gles_test_RendererJNI
- * Method:    glesRender
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesRender
-(JNIEnv *pEnv, jobject obj){
-GLfloat vVertices[] = {  0.0f,  0.5f, 0.0f,
-                         -0.5f, -0.5f, 0.0f,
-                         0.5f, -0.5f, 0.0f
-};
-
-// Set the viewport
-glViewport ( 0, 0, g_width, g_height );
-
-// Clear the color buffer
-glClear ( GL_COLOR_BUFFER_BIT );
-
-// Use the program object
-glUseProgram ( g_programObject );
-
-// Load the vertex data
-glVertexAttribPointer ( 0, 3, GL_FLOAT, GL_FALSE, 0, vVertices );
-glEnableVertexAttribArray ( 0 );
-
-glDrawArrays ( GL_TRIANGLES, 0, 3 );
+    glDrawArrays ( GL_TRIANGLES, 0, 3 );
 
 }
 
-/*
- * Class:     android_gles_test_RendererJNI
- * Method:    glesResize
- * Signature: (II)V
- */
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_glesResize
-(JNIEnv *pEnv, jobject obj, jint width, jint height){
-g_width = width;
-g_height = height;
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_glesResize
+        (JNIEnv *pEnv, jobject obj, jint width, jint height){
+    g_width = width;
+    g_height = height;
 
 }
 
-
-JNIEXPORT void JNICALL Java_android_gles_test_RendererJNI_readShaderFile
-(JNIEnv *env, jobject self, jobject assetManager){
-if (assetManager && env)
-{
-//LOGI("before AAssetManager_fromJava");
-g_pAssetManager = AAssetManager_fromJava(env, assetManager);
-//LOGI("after AAssetManager_fromJava");
-if (NULL == g_pAssetManager)
-{
-LOGE("AAssetManager_fromJava() return null !");
-}
-}
-else
-{
-LOGE("assetManager is null !");
-}
+JNIEXPORT void JNICALL Java_com_example_androidglestest_RendererJNI_readShaderFile
+        (JNIEnv *env, jobject self, jobject assetManager){
+    if (assetManager && env)
+    {
+        //LOGI("before AAssetManager_fromJava");
+        g_pAssetManager = AAssetManager_fromJava(env, assetManager);
+        //LOGI("after AAssetManager_fromJava");
+        if (NULL == g_pAssetManager)
+        {
+            LOGE("AAssetManager_fromJava() return null !");
+        }
+    }
+    else
+    {
+        LOGE("assetManager is null !");
+    }
 }
 
