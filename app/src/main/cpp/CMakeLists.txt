@@ -18,6 +18,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              native-lib.cpp
+            EglHelper.cpp
              RendererJNI.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -39,6 +40,7 @@ target_link_libraries( # Specifies the target library.
                        native-lib
                         android
                        GLESv3
+                         EGL
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
