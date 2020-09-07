@@ -46,13 +46,13 @@ void *eglThreadImpl(void *context) {
 
             eglHelper->swapBuffers();
 
-            if (eglThread->mRenderType == RENDER_MODULE_AUTO) {
-                usleep(1000000 / 60);
-            } else {
-                pthread_mutex_lock(&eglThread->pthread_mutex);
-                pthread_cond_wait(&eglThread->pthread_cond, &eglThread->pthread_mutex);
-                pthread_mutex_unlock(&eglThread->pthread_mutex);
-            }
+//            if (eglThread->mRenderType == RENDER_MODULE_AUTO) {
+//                usleep(1000000 / 60);
+//            } else {
+//                pthread_mutex_lock(&eglThread->pthread_mutex);
+//                pthread_cond_wait(&eglThread->pthread_cond, &eglThread->pthread_mutex);
+//                pthread_mutex_unlock(&eglThread->pthread_mutex);
+//            }
         }
 
     }
