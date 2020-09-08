@@ -7,9 +7,7 @@ import android.view.Surface;
 
 public class NationOpenGL {
 
-    private AssetManager mAssetMgr = null;
-    public NationOpenGL(Context context) {
-        mAssetMgr = context.getAssets();
+    public NationOpenGL() {
     }
     static {
         System.loadLibrary("native-lib");

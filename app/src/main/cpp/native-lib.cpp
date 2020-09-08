@@ -9,7 +9,6 @@
 #include <errno.h>
 #include <GLES3/gl3.h>
 #include <android/asset_manager_jni.h>
-#include <android/log.h>
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_androidglestest_MainActivity_stringFromJNI(
@@ -37,7 +36,7 @@ char* readShaderSrcFile(char *shaderFile, AAssetManager *pAssetManager)
         return NULL;
     }
     pAsset = AAssetManager_open(pAssetManager, shaderFile, AASSET_MODE_UNKNOWN);
-    //LOGI("after AAssetManager_open");
+    LOGI("after AAssetManager_open");
 
     size = AAsset_getLength(pAsset);
     LOGI("after AAssetManager_open");
@@ -209,9 +208,9 @@ void glesResize
 void  readShaderFile (JNIEnv *env, jobject assetManager){
     if (assetManager && env)
     {
-        //LOGI("before AAssetManager_fromJava");
+        LOGI("before AAssetManager_fromJava");
         g_pAssetManager = AAssetManager_fromJava(env, assetManager);
-        //LOGI("after AAssetManager_fromJava");
+        LOGI("after AAssetManager_fromJava");
         if (NULL == g_pAssetManager)
         {
             LOGE("AAssetManager_fromJava() return null !");
@@ -225,19 +224,15 @@ void  readShaderFile (JNIEnv *env, jobject assetManager){
 
 EglThread *eglThread = NULL;
 
-
 void callBackOnCreate() {
     glesInit();
 }
 
 void callBackOnChange(int width, int height) {
     glesResize(width, height);
-    //glViewport(0, 0, width, height);
 }
 
 void callBackOnDraw() {
-    //glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
-    //glClear(GL_COLOR_BUFFER_BIT);
     glesRender();
 }
 

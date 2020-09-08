@@ -24,7 +24,7 @@ public class NativeGLSurfaceView extends SurfaceView implements SurfaceHolder.Ca
 
     public NativeGLSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mNationOpenGL = new NationOpenGL(context);
+        mNationOpenGL = new NationOpenGL();
         mAssetMgr = context.getAssets();
         getHolder().addCallback(this);
     }
