@@ -5,6 +5,7 @@
 #include "android/native_window_jni.h"
 #include "EglThread.cpp"
 #include "GLES2/gl2.h"
+#include "RendererJNI.h"
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_androidglestest_MainActivity_stringFromJNI(
@@ -65,7 +66,8 @@ Java_com_example_androidglestest_NationOpenGL_nativeSurfaceDestroyed(JNIEnv *env
     if (eglThread) {
         eglThread->isExit = true;
 
-//        pthread_join(eglThread, NULL);
+//        void* retval;
+//        pthread_join(eglThread, &retval);
         delete (eglThread);
         eglThread = NULL;
     }

@@ -44,4 +44,5 @@ public void onSurfaceChanged(GL10 gl, int width, int height) {
 public void onDrawFrame(GL10 gl) {
         glesRender();
         }
-        }
+
+}
