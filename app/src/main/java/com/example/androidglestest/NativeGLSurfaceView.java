@@ -1,9 +1,11 @@
 package com.example.androidglestest;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 
 /**
  * Created by zzw on 2019/4/22
@@ -11,7 +13,7 @@ import android.view.SurfaceView;
  */
 public class NativeGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private NationOpenGL mNationOpenGL;
-
+    private AssetManager mAssetMgr = null;
     public NativeGLSurfaceView(Context context) {
         this(context, null);
     }
@@ -22,13 +24,14 @@ public class NativeGLSurfaceView extends SurfaceView implements SurfaceHolder.Ca
 
     public NativeGLSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mNationOpenGL = new NationOpenGL();
+        mNationOpenGL = new NationOpenGL(context);
+        mAssetMgr = context.getAssets();
         getHolder().addCallback(this);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        mNationOpenGL.nativeSurfaceCreate(holder.getSurface());
+        mNationOpenGL.nativeSurfaceCreate(holder.getSurface(), mAssetMgr);
     }
 
     @Override

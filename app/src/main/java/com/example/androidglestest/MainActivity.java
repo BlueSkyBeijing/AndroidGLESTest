@@ -13,13 +13,13 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
     private final int CONTEXT_CLIENT_VERSION = 3;
     private NativeGLSurfaceView mGLSurfaceView;
-    RendererJNI mRenderer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mGLSurfaceView = new NativeGLSurfaceView(this);
-        mRenderer=new RendererJNI(this);
+
 //        if (detectOpenGLES30()) {
 //            mGLSurfaceView.setEGLContextClientVersion(CONTEXT_CLIENT_VERSION);
 //            mGLSurfaceView.setRenderer(mRenderer);

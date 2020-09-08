@@ -95,11 +95,13 @@ int EglHelper::initEgl(EGLNativeWindowType window) {
 
     std::string Extensions = eglQueryString(display, EGL_EXTENSIONS);
     LOGD("egl extensions  %s", Extensions.c_str());
-    EGLint attribs[] = { EGL_GL_COLORSPACE, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
+    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
+    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
 
     mEglSurface = eglCreateWindowSurface(mEglDisplay, eglConfig, window, attribs);
     if (mEglSurface == EGL_NO_SURFACE) {
-        LOGE("eglCreateWindowSurface  error");
+        EGLint errorcode = eglGetError();
+        LOGE("eglCreateWindowSurface  error %d", errorcode);
         return -1;
     }
 
