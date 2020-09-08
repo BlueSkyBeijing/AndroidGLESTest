@@ -6,6 +6,40 @@
 #include <string>
 #include "JNILog.h"
 
+void logConfigInfo(EGLDisplay dpy, EGLConfig  config)
+{
+    EGLint resultvalue = 0 ;
+    eglGetConfigAttrib(dpy, config, EGL_RED_SIZE, &resultvalue);  LOGD("EGLConfigInfo : EGL_RED_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy, config, EGL_GREEN_SIZE, &resultvalue);   LOGD("EGLConfigInfo :EGL_GREEN_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy, config, EGL_BLUE_SIZE, &resultvalue);   LOGD("EGLConfigInfo :EGL_BLUE_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy, config, EGL_ALPHA_SIZE, &resultvalue);  LOGD("EGLConfigInfo :EGL_ALPHA_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy, config, EGL_DEPTH_SIZE, &resultvalue);   LOGD("EGLConfigInfo :EGL_DEPTH_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy, config, EGL_STENCIL_SIZE, &resultvalue);   LOGD("EGLConfigInfo :EGL_STENCIL_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy, config, EGL_SAMPLE_BUFFERS, &resultvalue);   LOGD("EGLConfigInfo :EGL_SAMPLE_BUFFERS :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_BIND_TO_TEXTURE_RGB, &resultvalue);   LOGD("EGLConfigInfo :EGL_BIND_TO_TEXTURE_RGB :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_SAMPLES, &resultvalue);   LOGD("EGLConfigInfo :EGL_SAMPLES :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_COLOR_BUFFER_TYPE, &resultvalue);   LOGD("EGLConfigInfo :EGL_COLOR_BUFFER_TYPE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_CONFIG_CAVEAT, &resultvalue);   LOGD("EGLConfigInfo :EGL_CONFIG_CAVEAT :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_CONFIG_ID, &resultvalue);  LOGD("EGLConfigInfo :EGL_CONFIG_ID :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_CONFORMANT, &resultvalue);   LOGD("EGLConfigInfo :EGL_CONFORMANT :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_LEVEL, &resultvalue);   LOGD("EGLConfigInfo :EGL_LEVEL :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_LUMINANCE_SIZE, &resultvalue);   LOGD("EGLConfigInfo :EGL_LUMINANCE_SIZE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_MAX_PBUFFER_WIDTH, &resultvalue);   LOGD("EGLConfigInfo :EGL_MAX_PBUFFER_WIDTH :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_MAX_PBUFFER_HEIGHT, &resultvalue);   LOGD("EGLConfigInfo :EGL_MAX_PBUFFER_HEIGHT :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_MAX_PBUFFER_PIXELS, &resultvalue);   LOGD("EGLConfigInfo :EGL_MAX_PBUFFER_PIXELS :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_MAX_SWAP_INTERVAL, &resultvalue);   LOGD("EGLConfigInfo :EGL_MAX_SWAP_INTERVAL :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_MIN_SWAP_INTERVAL, &resultvalue);   LOGD("EGLConfigInfo :EGL_MIN_SWAP_INTERVAL :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_NATIVE_RENDERABLE, &resultvalue);   LOGD("EGLConfigInfo :EGL_NATIVE_RENDERABLE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_NATIVE_VISUAL_TYPE, &resultvalue);   LOGD("EGLConfigInfo :EGL_NATIVE_VISUAL_TYPE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_NATIVE_VISUAL_ID, &resultvalue);   LOGD("EGLConfigInfo :EGL_NATIVE_VISUAL_ID :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_RENDERABLE_TYPE, &resultvalue);   LOGD("EGLConfigInfo :EGL_RENDERABLE_TYPE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_SURFACE_TYPE, &resultvalue);   LOGD("EGLConfigInfo :EGL_SURFACE_TYPE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_TRANSPARENT_TYPE, &resultvalue);   LOGD("EGLConfigInfo :EGL_TRANSPARENT_TYPE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_TRANSPARENT_RED_VALUE, &resultvalue);   LOGD("EGLConfigInfo :EGL_TRANSPARENT_RED_VALUE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_TRANSPARENT_GREEN_VALUE, &resultvalue);   LOGD("EGLConfigInfo :EGL_TRANSPARENT_GREEN_VALUE :	%u" , resultvalue );
+    eglGetConfigAttrib(dpy,config, EGL_TRANSPARENT_BLUE_VALUE, &resultvalue);   LOGD("EGLConfigInfo :EGL_TRANSPARENT_BLUE_VALUE :	%u" , resultvalue );
+}
+
 int printEGLConfigurations(EGLDisplay dpy) {
     EGLint numConfig = 0;
     EGLint returnVal = eglGetConfigs(dpy, NULL, 0, &numConfig);
@@ -25,9 +59,11 @@ int printEGLConfigurations(EGLDisplay dpy) {
         free(configs);
         return false;
     }
+    EGLConfig* configscur = configs;
     for(int i = 0; i < numConfig; i++) {
         LOGD("Configuration %d\n", i);
-
+        logConfigInfo(dpy, *configscur);
+        configscur++;
     }
     free(configs);
     return true;
@@ -95,8 +131,19 @@ int EglHelper::initEgl(EGLNativeWindowType window) {
 
     std::string Extensions = eglQueryString(display, EGL_EXTENSIONS);
     LOGD("egl extensions  %s", Extensions.c_str());
-    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
-    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
+    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
+    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
+
+    int ResultValue = 0 ;
+    int r, g, b, a;
+    eglGetConfigAttrib(display, eglConfig, EGL_RED_SIZE, &ResultValue); r = ResultValue;
+    eglGetConfigAttrib(display, eglConfig, EGL_GREEN_SIZE, &ResultValue); g = ResultValue;
+    eglGetConfigAttrib(display, eglConfig, EGL_BLUE_SIZE, &ResultValue); b = ResultValue;
+    eglGetConfigAttrib(display, eglConfig, EGL_ALPHA_SIZE, &ResultValue); a = ResultValue;
+
+    LOGD("eglConfig R %d, G %d, B %d, A %d\n", r, g, b, a);
+
+    logConfigInfo(display, eglConfig);
 
     mEglSurface = eglCreateWindowSurface(mEglDisplay, eglConfig, window, attribs);
     if (mEglSurface == EGL_NO_SURFACE) {
