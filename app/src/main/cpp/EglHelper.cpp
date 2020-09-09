@@ -118,7 +118,7 @@ int EglHelper::initEgl(EGLNativeWindowType window) {
     }
 
     const EGLint attrib_ctx_list[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_CONTEXT_CLIENT_VERSION, 3,
             EGL_NONE
     };
     mEglContext = eglCreateContext(mEglDisplay, eglConfig, NULL, attrib_ctx_list);
@@ -131,8 +131,8 @@ int EglHelper::initEgl(EGLNativeWindowType window) {
 
     std::string Extensions = eglQueryString(display, EGL_EXTENSIONS);
     LOGD("egl extensions  %s", Extensions.c_str());
-    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
-    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
+    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
+    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
 
     int ResultValue = 0 ;
     int r, g, b, a;
