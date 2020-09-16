@@ -40,6 +40,28 @@ void logConfigInfo(EGLDisplay dpy, EGLConfig  config)
     eglGetConfigAttrib(dpy,config, EGL_TRANSPARENT_BLUE_VALUE, &resultvalue);   LOGD("EGLConfigInfo :EGL_TRANSPARENT_BLUE_VALUE :	%u" , resultvalue );
 }
 
+std::string eglErrorString(EGLint error)
+{
+    switch(error)
+    {
+        case EGL_SUCCESS: return "No error";
+        case EGL_NOT_INITIALIZED: return "EGL not initialized or failed to initialize";
+        case EGL_BAD_ACCESS: return "Resource inaccessible";
+        case EGL_BAD_ALLOC: return "Cannot allocate resources";
+        case EGL_BAD_ATTRIBUTE: return "Unrecognized attribute or attribute value";
+        case EGL_BAD_CONTEXT: return "Invalid EGL context";
+        case EGL_BAD_CONFIG: return "Invalid EGL frame buffer configuration";
+        case EGL_BAD_CURRENT_SURFACE: return "Current surface is no longer valid";
+        case EGL_BAD_DISPLAY: return "Invalid EGL display";
+        case EGL_BAD_SURFACE: return "Invalid surface";
+        case EGL_BAD_MATCH: return "Inconsistent arguments";
+        case EGL_BAD_PARAMETER: return "Invalid argument";
+        case EGL_BAD_NATIVE_PIXMAP: return "Invalid native pixmap";
+        case EGL_BAD_NATIVE_WINDOW: return "Invalid native window";
+        case EGL_CONTEXT_LOST: return "Context lost";
+    }
+    return "Unknown error ";
+}
 int printEGLConfigurations(EGLDisplay dpy) {
     EGLint numConfig = 0;
     EGLint returnVal = eglGetConfigs(dpy, NULL, 0, &numConfig);
@@ -131,8 +153,8 @@ int EglHelper::initEgl(EGLNativeWindowType window) {
 
     std::string Extensions = eglQueryString(display, EGL_EXTENSIONS);
     LOGD("egl extensions  %s", Extensions.c_str());
-    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
-    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
+    //EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_BT2020_PQ_EXT,EGL_NONE };
+    EGLint attribs[] = { EGL_GL_COLORSPACE_KHR, EGL_GL_COLORSPACE_DISPLAY_P3_EXT,EGL_NONE };
 
     int ResultValue = 0 ;
     int r, g, b, a;
@@ -148,7 +170,8 @@ int EglHelper::initEgl(EGLNativeWindowType window) {
     mEglSurface = eglCreateWindowSurface(mEglDisplay, eglConfig, window, attribs);
     if (mEglSurface == EGL_NO_SURFACE) {
         EGLint errorcode = eglGetError();
-        LOGE("eglCreateWindowSurface  error %d", errorcode);
+        std::string errorstring = eglErrorString(errorcode);
+        LOGE("eglCreateWindowSurface  error %s", errorstring.c_str());
         return -1;
     }
 
