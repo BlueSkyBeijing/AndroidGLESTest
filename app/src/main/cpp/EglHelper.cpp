@@ -91,6 +91,34 @@ int printEGLConfigurations(EGLDisplay dpy) {
     return true;
 }
 
+void testGetGPUClock()
+{
+    float curGPUClock = 0.0f;
+    if (FILE* CurFreqFile = fopen("/sys/class/kgsl/kgsl-3d0/devfreq/cur_freq", "r"))
+    {
+        int curFreq = 0;
+        char curFreqBuffer[64];
+        if (fgets(curFreqBuffer, 64, CurFreqFile) != nullptr)
+        {
+           curFreq = atol(curFreqBuffer);
+        }
+        fclose(CurFreqFile);
+
+        if (FILE* GPUBusyPercentageFile = fopen("/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage", "r"))
+        {
+            int gpuBusyPercentage = 0;
+            char gpuBusyPercentageBuffer[64];
+            if (fgets(gpuBusyPercentageBuffer, 64, GPUBusyPercentageFile) != nullptr)
+            {
+                sscanf(gpuBusyPercentageBuffer, "%d %%", &gpuBusyPercentage);
+            }
+            fclose(GPUBusyPercentageFile);
+
+            curGPUClock = curFreq * gpuBusyPercentage * 0.01f;
+        }
+    }
+}
+
 EglHelper::EglHelper() {
     mEglDisplay = EGL_NO_DISPLAY;
     mEglSurface = EGL_NO_SURFACE;
@@ -102,6 +130,8 @@ EglHelper::~EglHelper(){
 }
 
 int EglHelper::initEgl(EGLNativeWindowType window) {
+
+    testGetGPUClock();
 
     mEglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if (mEglDisplay == EGL_NO_DISPLAY) {
